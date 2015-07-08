@@ -1,0 +1,49 @@
+From a6b792b9abb26e810ad9ca11be31998c7e97db6c Mon Sep 17 00:00:00 2001
+From: Bian Naimeng <biannm@cn.fujitsu.com>
+Date: Fri, 3 Jul 2015 15:48:58 +0900
+Subject: [PATCH 1/2] pacemaker: fix xml config
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+---
+ configure.ac | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 03f543d..25af918 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -533,7 +533,6 @@ AC_PATH_PROGS(TAR, tar)
+ AC_PATH_PROGS(MD5, md5)
+ AC_PATH_PROGS(TEST, test)
+ AC_PATH_PROGS(PKGCONFIG, pkg-config)
+-AC_PATH_PROGS(XML2CONFIG, xml2-config)
+ AC_PATH_PROGS(VALGRIND_BIN, valgrind, /usr/bin/valgrind)
+ AC_DEFINE_UNQUOTED(VALGRIND_BIN, "$VALGRIND_BIN", Valgrind command)
+ 
+@@ -779,17 +778,13 @@ dnl AC_CHECK_HEADERS(netinet/icmp6.h)
+ dnl AC_CHECK_HEADERS(netinet/ip6.h)
+ dnl AC_CHECK_HEADERS(netinet/ip_icmp.h)
+ 
+-AC_MSG_CHECKING(for special libxml2 includes)
+-if test "x$XML2CONFIG" = "x"; then
+-   AC_MSG_ERROR(libxml2 config not found)
+-else
+-   XML2HEAD="`$XML2CONFIG --cflags`"
+-   AC_MSG_RESULT($XML2HEAD)
+-   AC_CHECK_LIB(xml2, xmlReadMemory)
+-   AC_CHECK_LIB(xslt, xsltApplyStylesheet)
+-fi
++PKG_CHECK_MODULES([XML], [libxml-2.0])
++PKG_CHECK_MODULES([XSLT], [libxslt])
++
++AC_CHECK_LIB(xml2, xmlReadMemory)
++AC_CHECK_LIB(xslt, xsltApplyStylesheet)
+ 
+-CPPFLAGS="$CPPFLAGS $XML2HEAD"
++CPPFLAGS="$CPPFLAGS $XML_CFLAGS"
+ 
+ AC_CHECK_HEADERS(libxml/xpath.h)
+ AC_CHECK_HEADERS(libxslt/xslt.h)
+-- 
+1.8.4.2
+

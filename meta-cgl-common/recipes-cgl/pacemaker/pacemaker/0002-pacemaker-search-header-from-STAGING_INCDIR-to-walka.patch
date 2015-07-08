@@ -1,0 +1,45 @@
+From 1fef2f6adaef3c56649adce4aca1b0ef2214c13b Mon Sep 17 00:00:00 2001
+From: Bian Naimeng <biannm@cn.fujitsu.com>
+Date: Fri, 3 Jul 2015 15:55:52 +0900
+Subject: [PATCH 2/2] pacemaker: search header from STAGING_INCDIR to
+ walkaround error
+
+ ** -I/usr/include/ is unsafe for cross-compilation
+
+ ... ...
+
+ ** This autoconf log indicates errors, it looked at host include and/or library paths
+ ** while determining system capabilities
+
+Signed-off-by: Bian Naimeng <biannm@cn.fujitsu.com>
+---
+ configure.ac | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 25af918..4dee123 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -451,7 +451,8 @@ case "$host_os" in
+ 		;;
+ *linux*)
+ 		AC_DEFINE_UNQUOTED(ON_LINUX, 1, Compiling for Linux platform)
+-  		CFLAGS="$CFLAGS -I${prefix}/include"
++		CFLAGS="$CFLAGS -I${STAGING_INCDIR}"
++		CPPFLAGS="$CPPFLAGS -I${STAGING_INCDIR}/heartbeat"
+  		;;
+ darwin*)
+ 		AC_DEFINE_UNQUOTED(ON_DARWIN, 1, Compiling for Darwin platform)
+@@ -461,7 +462,8 @@ darwin*)
+ esac
+ 
+ dnl Eventually remove this
+-CFLAGS="$CFLAGS -I${prefix}/include/heartbeat"
++CFLAGS="$CFLAGS -I${STAGING_INCDIR}/heartbeat"
++CPPFLAGS="$CPPFLAGS -I${STAGING_INCDIR}/heartbeat"
+ 
+ AC_SUBST(INIT_EXT)
+ AC_MSG_NOTICE(Host CPU: $host_cpu)
+-- 
+1.8.4.2
+
